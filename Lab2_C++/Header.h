@@ -38,10 +38,10 @@ private:
 	std::vector<std::vector<Answer>> StudentsAnswers;
 	std::map<std::string, double> scores;
 public:
-	void GetCorrectSolution(std::ifstream Solutuons);
+	void GetCorrectSolution(std::ifstream& Solutuons);
 	void GetScores(); 
 	void PrintScores();
-	void GetStudentsAnswers(std::vector<Student>);
+	void GetStudentsAnswers(std::vector<Student*>);
 };
 
 class Student
@@ -51,20 +51,30 @@ protected:
 	std::string surname;
 public:
 	Student(std::string surname);
-	void FindSolutions(std::ifstream Task);
+	virtual void FindSolutions(std::ifstream& Task) = 0;
 	std::vector <Answer> GetSolutions();
 };
 
+class NormalStudent : public Student
+{
+	using Student::Student;
+public:
+	void FindSolutions(std::ifstream& Task) override;
+};
+
+
 class BadStudent : public Student
 {
+	using Student::Student;
 public:
-	void FindSolutions(std::ifstream Task);
+	void FindSolutions(std::ifstream& Task) override;
 };
 
 class GoodStudent :public Student
 {
+	using Student::Student;
 public:
-	void FindSolutions(std::ifstream Task);
+	void FindSolutions(std::ifstream& Task) override;
 };
 
 #endif // !HEADER_H

@@ -5,10 +5,10 @@ using namespace std;
 const int EquationAmount = 8;
 const int SolutionsAmount = 2;
 
-void Teacher::GetStudentsAnswers(std::vector<Student> Students)
+void Teacher::GetStudentsAnswers(std::vector<Student*> Students)
 {
 	for (auto& Student : Students)
-		StudentsAnswers.push_back(Student.GetSolutions());
+		StudentsAnswers.push_back(Student->GetSolutions());
 };
 
 void Teacher::GetScores()
@@ -32,9 +32,10 @@ void Teacher::PrintScores()
 		cout << "Student: " << OneStudentScore.first << " has grades " << OneStudentScore.second << "/" << EquationAmount << endl;
 };
 
-void Teacher::GetCorrectSolution(std::ifstream Solutions)
+void Teacher::GetCorrectSolution(std::ifstream& Solutions)
 {	
-	vector<double> OneSol(SolutionsAmount);
+	vector<double> OneSol;
+	OneSol.reserve(2);
 	for (size_t i = 0; i < EquationAmount; i++)
 	{
 		for (size_t j = 0; j < SolutionsAmount; j++)
@@ -44,6 +45,8 @@ void Teacher::GetCorrectSolution(std::ifstream Solutions)
 			OneSol.push_back(TempSol);
 		}
 		CorrectSolutions.push_back(OneSol);
+		OneSol.clear();
+		OneSol.reserve(2);
 	}
 };
 
@@ -51,34 +54,47 @@ Student::Student(string surname)
 {
 	this->surname = surname;
 };
-void Student::FindSolutions(std::ifstream Task)
+
+static vector<double> CheckForProbability(int const Probability, Solution& OurSolution)
+{
+	vector <double> Solution;
+	if (Probability < 55)
+	{
+		Solution.push_back(*OurSolution.x1);
+		Solution.push_back(*OurSolution.x2);
+	}
+	else
+		Solution = { 0,0 };
+	return Solution;
+}
+
+void NormalStudent::FindSolutions(std::ifstream& Task)
 {
 	Answer SomeAnswer;
 	Equation* OurEquation = new Equation;
 	Solution* OurSolution = new Solution;
 
-
-	for (size_t i = 0; i < SolutionsAmount; i++)
+	for (size_t i = 0; i < EquationAmount; i++)
 	{
-
+		/*cout << Task.tellg() << " ";*/
 		double a, b, c;
 		Task >> a >> b >> c;
 		GetParameters(OurEquation, a, b, c);
 		GetSolution(OurEquation, OurSolution);
 		vector<double> sol;
+		sol.reserve(2);
 
-		srand(time(0));
-		((rand() % 100) < 55) ? sol = { OurSolution->x1, OurSolution->x2 } : sol = { 0, 0 };
+		sol = CheckForProbability(rand()%100, *OurSolution);
 
 		SomeAnswer.FillTheAnswer(i, surname, sol );
 		solution.push_back(SomeAnswer);
 	}
 };
 
-void BadStudent::FindSolutions(std::ifstream Task)
+void BadStudent::FindSolutions(std::ifstream& Task)
 {
 	Answer SomeAnswer;
-	for (size_t i = 0; i < SolutionsAmount; i++)
+	for (size_t i = 0; i < EquationAmount; i++)
 	{
 		SomeAnswer.FillTheAnswer(i, surname, { 0,0 });
 		solution.push_back(SomeAnswer);
@@ -86,22 +102,22 @@ void BadStudent::FindSolutions(std::ifstream Task)
 };
 
 
-void GoodStudent::FindSolutions(ifstream Task)
+void GoodStudent::FindSolutions(ifstream& Task)
 {
 	Answer SomeAnswer;
 	Equation* OurEquation = new Equation;
 	Solution* OurSolution = new Solution;
 
 	
-	for (size_t i = 0; i < SolutionsAmount; i++)
+	for (size_t i = 0; i < EquationAmount; i++)
 	{
 
 		double a, b, c;
 		Task >> a >> b >> c;
 		GetParameters(OurEquation, a, b, c);
 		GetSolution(OurEquation, OurSolution);
-
-		SomeAnswer.FillTheAnswer(i, surname, { OurSolution->x1,OurSolution->x2 });
+		vector<double> sol = { *OurSolution->x1,*OurSolution->x2 };
+		SomeAnswer.FillTheAnswer(i, surname, sol);
 		solution.push_back(SomeAnswer);
 	}
 };
