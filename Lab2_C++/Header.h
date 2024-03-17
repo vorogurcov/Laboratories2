@@ -9,15 +9,21 @@
 #include <vector>
 #include <map>
 
+class Teacher;
+class Student;
+
 class Answer
 {
+private:
 	int number;
 	std::string surname;
 	std::vector<int> solution;
+public:
+	friend class Teacher;
 };
 
 
-class Student;
+
 
 class Teacher
 {
@@ -28,6 +34,7 @@ private:
 public:
 	void GetCorrectSolution(std::ifstream Solutuons);
 	void GetScores(); 
+	void PrintScores();
 	void GetStudentsAnswers(std::vector<Student>);
 };
 

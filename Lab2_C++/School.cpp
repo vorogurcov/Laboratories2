@@ -12,9 +12,24 @@ void Teacher::GetStudentsAnswers(std::vector<Student> Students)
 
 void Teacher::GetScores()
 {
-
+	for (auto& OneStudentAnswer : StudentsAnswers)
+	{
+		int score = 0;
+		string StudentSurname = OneStudentAnswer[0].surname;//Since surname is the same in any string of the Answer, we can get any of them.
+		for (auto& OneEquationAnswer : OneStudentAnswer)
+			for (size_t i = 0; i < EquationAmount; i++)
+				if (OneEquationAnswer.solution == CorrectSolutions[i])
+					score++;
+			
+		scores.insert({ StudentSurname, score });
+	}
 }
 
+void Teacher::PrintScores()
+{
+	for (auto& OneStudentScore : scores)
+		cout << "Student: " << OneStudentScore.first << " has grades " << OneStudentScore.second << "/" << EquationAmount << endl;
+};
 
 void Teacher::GetCorrectSolution(std::ifstream Solutions)
 {	
