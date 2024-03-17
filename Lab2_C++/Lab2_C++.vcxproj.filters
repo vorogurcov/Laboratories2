@@ -21,10 +21,7 @@
     <ClCompile Include="School.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FuncsLib.c">
+    <ClCompile Include="FuncsLib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

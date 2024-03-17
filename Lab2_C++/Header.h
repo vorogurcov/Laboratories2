@@ -17,9 +17,15 @@ class Answer
 private:
 	int number;
 	std::string surname;
-	std::vector<int> solution;
+	std::vector<double> solution;
 public:
 	friend class Teacher;
+	void FillTheAnswer(int number, std::string surname, std::vector<double> solution)
+	{
+		this->number = number;
+		this->surname = surname;
+		this->solution = solution;
+	}
 };
 
 
@@ -28,9 +34,9 @@ public:
 class Teacher
 {
 private:
-	std::vector <std::vector<int>> CorrectSolutions;
+	std::vector <std::vector<double>> CorrectSolutions;
 	std::vector<std::vector<Answer>> StudentsAnswers;
-	std::map<std::string, int> scores;
+	std::map<std::string, double> scores;
 public:
 	void GetCorrectSolution(std::ifstream Solutuons);
 	void GetScores(); 
@@ -40,15 +46,16 @@ public:
 
 class Student
 {
-private:
+protected:
 	std::vector <Answer> solution;
 	std::string surname;
 public:
+	Student(std::string surname);
 	void FindSolutions(std::ifstream Task);
 	std::vector <Answer> GetSolutions();
 };
 
-class BadStudent :public Student
+class BadStudent : public Student
 {
 public:
 	void FindSolutions(std::ifstream Task);
